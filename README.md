@@ -109,3 +109,74 @@ Setelah menjalankan server, Anda dapat mengakses:
 
 - Admin UI: http://localhost:1337/admin
 - API Dokumentasi: http://localhost:1337/documentation
+
+# Boedi Fiqih Portfolio Backend
+
+Backend API untuk portfolio website menggunakan Strapi CMS.
+
+## Setup Development
+
+1. Clone repository
+```bash
+git clone [repository-url]
+cd strapi-backend
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Copy environment variables
+```bash
+cp .env.example .env
+```
+
+4. Update environment variables sesuai kebutuhan
+
+5. Start development server
+```bash
+npm run develop
+```
+
+## Deploy ke Railway (Otomatis)
+
+Repository ini sudah dikonfigurasi untuk deploy otomatis ke Railway. Setiap push ke branch `main` akan memicu deploy otomatis.
+
+### Prasyarat
+
+1. Buat akun Railway (https://railway.app)
+2. Dapatkan Railway Token dari dashboard Railway
+3. Tambahkan Railway Token ke GitHub Secrets:
+   - Buka repository di GitHub
+   - Klik Settings > Secrets > Actions
+   - Tambahkan secret baru dengan nama `RAILWAY_TOKEN`
+   - Paste Railway Token Anda
+
+### Konfigurasi Otomatis
+
+Repository ini sudah termasuk:
+- `railway.toml` untuk konfigurasi Railway
+- GitHub Actions workflow untuk deploy otomatis
+- Health check endpoint
+- PostgreSQL database setup
+
+### Environment Variables
+
+Environment variables akan diatur otomatis oleh Railway:
+- `DATABASE_CLIENT`: postgres
+- `DATABASE_HOST`: Railway PostgreSQL host
+- `DATABASE_PORT`: Railway PostgreSQL port
+- `DATABASE_NAME`: Railway PostgreSQL database name
+- `DATABASE_USERNAME`: Railway PostgreSQL username
+- `DATABASE_PASSWORD`: Railway PostgreSQL password
+- `JWT_SECRET`: Generated automatically
+- `ADMIN_JWT_SECRET`: Generated automatically
+- `NODE_ENV`: production
+
+## API Endpoints
+
+- Admin Panel: `/admin`
+- API: `/api`
+- Documentation: `/documentation`
+- Health Check: `/_health`
