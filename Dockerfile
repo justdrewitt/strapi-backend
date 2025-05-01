@@ -2,16 +2,18 @@
 FROM node:18.19.0-bullseye
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    python3 \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps --no-optional
+# Install dependencies with specific flags to avoid SWC
+RUN npm install --legacy-peer-deps --no-optional --ignore-scripts
+
+# Copy source code
+COPY . .
+
+# Remove SWC and install Babel
+RUN npm uninstall @swc/core && \
+    npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/preset-react @babel/preset-typescript
 
 # Copy source code
 COPY . .
