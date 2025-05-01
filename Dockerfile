@@ -1,15 +1,15 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:18-alpine
 WORKDIR /app
 
-# Install build dependencies
+# Install system dependencies
 RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# Install dependencies with specific flags
+RUN npm install --legacy-peer-deps --no-optional
 
 # Copy source code
 COPY . .
@@ -17,20 +17,7 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine
-WORKDIR /app
-
-# Install production dependencies
-RUN apk add --no-cache python3 make g++
-
-# Copy built assets from build stage
-COPY --from=build /app ./
-
-# Install production dependencies only
-RUN npm install --omit=dev --legacy-peer-deps
-
-# Expose the port the app runs on
+# Expose the port
 EXPOSE 1337
 
 # Start the application

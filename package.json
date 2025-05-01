@@ -9,8 +9,7 @@
     "start": "strapi start",
     "build": "strapi build",
     "strapi": "strapi",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run build"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@strapi/plugin-cloud": "^5.12.7",
