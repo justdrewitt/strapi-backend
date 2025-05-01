@@ -1,40 +1,25 @@
-# Builder stage
-FROM node:18-alpine as builder
-WORKDIR /app
-
-# Install build tools for native modules
-RUN apk add --no-cache python3 make g++
-
-# Copy dependency files
-COPY package.json package-lock.json ./
-
-# Install all dependencies for building
-RUN npm ci --legacy-peer-deps --no-audit --no-fund
-
-# Copy source code
-COPY . .
-
-# Build the app
-RUN NODE_OPTIONS="--max-old-space-size=2048" npm run build
-
-# Production image
+# Extremely lightweight build for Railway
 FROM node:18-alpine
 WORKDIR /app
 
-# Install build tools for native modules (if needed at runtime)
-RUN apk add --no-cache python3 make g++
+# Install essential build tools
+RUN apk add --no-cache python3 make g++ git
 
-# Copy dependency files
-COPY package.json package-lock.json ./
+# Copy only package files first
+COPY package.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production --no-audit --no-fund
+# Install dependencies with minimal memory usage
+RUN npm install --omit=dev --no-audit --no-fund --production
 
-# Copy built app from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
+# Copy application code
+COPY . .
 
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=1337
+
+# Expose port
 EXPOSE 1337
+
+# Start command
 CMD ["npm", "run", "start"]
