@@ -5,15 +5,21 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with specific flags to avoid SWC
-RUN npm install --legacy-peer-deps --no-optional --ignore-scripts
+# Install dependencies with specific flags
+RUN npm install --legacy-peer-deps --no-optional
 
 # Copy source code
 COPY . .
 
-# Remove SWC and install Babel
-RUN npm uninstall @swc/core && \
-    npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/preset-react @babel/preset-typescript
+# Force SWC to use JavaScript implementation
+RUN npm install --save-dev @swc/core@latest && \
+    npm config set @swc:registry https://registry.npmjs.org && \
+    npm config set @swc:always-auth false
+
+# Create a script to force SWC to use JavaScript
+RUN echo "#!/bin/sh\nexport SWC_JIT=0\nexec \"$@\"" > /usr/local/bin/swc-force-js && \
+    chmod +x /usr/local/bin/swc-force-js && \
+    echo 'export PATH="/usr/local/bin:$PATH"' > /root/.bashrc
 
 # Copy source code
 COPY . .

@@ -7,10 +7,24 @@
   "scripts": {
     "develop": "strapi develop",
     "start": "strapi start",
-    "build": "strapi build",
+    "build": "SWC_JIT=0 strapi build",
     "strapi": "strapi",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "babel": "babel src --out-dir dist --extensions .ts,.tsx,.js,.jsx"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "swc": {
+    "jiter": false,
+    "jsc": {
+      "target": "es2022",
+      "parser": {
+        "syntax": "typescript",
+        "tsx": true,
+        "decorators": true
+      },
+      "transform": {
+        "legacyDecorator": true,
+        "decoratorMetadata": true
+      }
+    }
   },
   "babel": {
     "presets": [
