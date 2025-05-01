@@ -9,8 +9,24 @@
     "start": "strapi start",
     "build": "strapi build",
     "strapi": "strapi",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "babel src --out-dir dist --extensions .ts,.tsx,.js,.jsx"
   },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@babel/preset-typescript"
+    ]
+  },
+  "transpileDependencies": [
+    "@strapi/admin",
+    "@strapi/design-system",
+    "@strapi/helper-plugin",
+    "@strapi/icons",
+    "@strapi/utils",
+    "@strapi/strapi"
+  ],
   "dependencies": {
     "@strapi/plugin-cloud": "^5.12.7",
     "@strapi/plugin-seo": "^2.0.8",
