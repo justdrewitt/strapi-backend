@@ -7,9 +7,21 @@
   "scripts": {
     "develop": "strapi develop",
     "start": "strapi start",
-    "build": "SWC_JIT=0 strapi build",
+    "build": "NODE_ENV=production strapi build",
     "strapi": "strapi",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "config": {
+    "build": {
+      "transpileDependencies": [
+        "@strapi/admin",
+        "@strapi/design-system",
+        "@strapi/helper-plugin",
+        "@strapi/icons",
+        "@strapi/utils",
+        "@strapi/strapi"
+      ]
+    }
   },
   "swc": {
     "jiter": false,

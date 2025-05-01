@@ -1,25 +1,48 @@
 # Build stage
-FROM node:18.19.0-bullseye
+FROM node:18.19.0-bullseye as builder
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with specific flags
-RUN npm install --legacy-peer-deps --no-optional
+# Install dependencies
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
 
-# Force SWC to use JavaScript implementation
-RUN npm install --save-dev @swc/core@latest && \
-    npm config set @swc:registry https://registry.npmjs.org && \
-    npm config set @swc:always-auth false
+# Create .strapi directory if it doesn't exist
+RUN mkdir -p .strapi
 
 # Create a script to force SWC to use JavaScript
 RUN echo "#!/bin/sh\nexport SWC_JIT=0\nexec \"$@\"" > /usr/local/bin/swc-force-js && \
-    chmod +x /usr/local/bin/swc-force-js && \
-    echo 'export PATH="/usr/local/bin:$PATH"' > /root/.bashrc
+    chmod +x /usr/local/bin/swc-force-js
+
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM node:18.19.0-bullseye
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies
+RUN npm install --legacy-peer-deps --production
+
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/admin ./admin
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/extensions ./extensions
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.strapi ./
 
 # Copy source code
 COPY . .
