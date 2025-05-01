@@ -26,7 +26,7 @@ COPY --from=build /app ./
 RUN npm install --omit=dev
 
 # Expose the port the app runs on
-EXPOSE 8080
+EXPOSE 1337
 
 # Start the application
 CMD ["npm", "run", "start"] 
