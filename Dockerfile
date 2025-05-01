@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18-bullseye
+FROM node:18.19.0-bullseye
 WORKDIR /app
 
 # Install system dependencies
@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy package files
@@ -17,10 +18,12 @@ ENV NODE_ENV=production
 ENV npm_config_build_from_source=true
 ENV npm_config_target_arch=x64
 ENV npm_config_target_platform=linux
-ENV npm_config_target_libc=musl
 
 # Install dependencies with specific flags
 RUN npm install --legacy-peer-deps --no-optional
+
+# Rebuild native modules
+RUN npm rebuild @swc/core --build-from-source
 
 # Copy source code
 COPY . .
