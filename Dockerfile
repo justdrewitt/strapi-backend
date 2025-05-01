@@ -1,18 +1,25 @@
-# Single-stage build for Railway with minimal memory usage
+# Production-only Dockerfile for pre-built Strapi
 FROM node:18-alpine
 WORKDIR /app
 
-# Install essential build tools
-RUN apk add --no-cache python3 make g++ git
+# Install minimal dependencies for production
+RUN apk add --no-cache python3 make g++
 
-# Copy only package files first
-COPY package.json ./
+# Copy package files
+COPY package.json package-lock.json ./
 
-# Install dependencies with minimal memory usage
-RUN npm install --production=false --no-audit --no-fund
+# Install only production dependencies
+RUN npm install --production --no-audit --no-fund
 
-# Copy application code
-COPY . .
+# Copy pre-built application
+COPY ./dist ./dist
+COPY ./config ./config
+COPY ./public ./public
+COPY ./src ./src
+COPY ./database ./database
+COPY ./.env ./.env
+COPY ./favicon.png ./favicon.png
+COPY ./types ./types
 
 # Set environment variables
 ENV NODE_ENV=production
