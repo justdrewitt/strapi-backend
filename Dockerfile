@@ -1,17 +1,8 @@
-# Production-only Dockerfile for pre-built Strapi
-FROM node:18-alpine
+# Absolute minimal Dockerfile for pre-built Strapi
+FROM node:18-alpine-slim
 WORKDIR /app
 
-# Install minimal dependencies for production
-RUN apk add --no-cache python3 make g++
-
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install only production dependencies
-RUN npm install --production --no-audit --no-fund
-
-# Copy pre-built application
+# Copy only the pre-built application
 COPY ./dist ./dist
 COPY ./config ./config
 COPY ./public ./public
@@ -20,6 +11,8 @@ COPY ./database ./database
 COPY ./.env ./.env
 COPY ./favicon.png ./favicon.png
 COPY ./types ./types
+COPY ./package.json ./package.json
+COPY ./node_modules ./node_modules
 
 # Set environment variables
 ENV NODE_ENV=production
