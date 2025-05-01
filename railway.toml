@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm install && npm run build"
+buildCommand = "npm install --no-optional && npm run build"
 
 [deploy]
 startCommand = "npm run start"
@@ -11,4 +11,11 @@ restartPolicyMaxRetries = 10
 
 [deploy.env]
 NODE_ENV = "production"
-DATABASE_CLIENT = "postgres" 
+DATABASE_CLIENT = "postgres"
+DATABASE_HOST = "{{DB_HOST}}"
+DATABASE_PORT = "{{DB_PORT}}"
+DATABASE_NAME = "{{DB_NAME}}"
+DATABASE_USERNAME = "{{DB_USER}}"
+DATABASE_PASSWORD = "{{DB_PASS}}"
+ADMIN_JWT_SECRET = "{{ADMIN_JWT_SECRET}}"
+JWT_SECRET = "{{JWT_SECRET}}" 
