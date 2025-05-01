@@ -1,4 +1,4 @@
-# Extremely lightweight build for Railway
+# Single-stage build for Railway with minimal memory usage
 FROM node:18-alpine
 WORKDIR /app
 
@@ -8,12 +8,8 @@ RUN apk add --no-cache python3 make g++ git
 # Copy only package files first
 COPY package.json ./
 
-# Install dependencies with specific versions
-RUN npm install --no-audit --no-fund --legacy-peer-deps && \
-    npm install @babel/plugin-proposal-class-properties@7.18.6 \
-                @babel/plugin-proposal-private-methods@7.18.6 \
-                @babel/plugin-proposal-private-property-in-object@7.21.0 \
-                --save-dev --no-audit --no-fund
+# Install dependencies with minimal memory usage
+RUN npm install --production=false --no-audit --no-fund
 
 # Copy application code
 COPY . .
