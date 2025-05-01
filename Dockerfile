@@ -1,9 +1,13 @@
 # Build stage
-FROM node:18-alpine
+FROM node:18-bullseye
 WORKDIR /app
 
 # Install system dependencies
-RUN apk add --no-cache python3 make g++ libc6-compat
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy package files
 COPY package*.json ./
